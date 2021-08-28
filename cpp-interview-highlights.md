@@ -178,9 +178,349 @@ public:
 ```
 
 ## **1.7 内存对齐**
+> 面试高频指数：★★☆☆☆
+
+### 什么是内存对齐？内存对齐的原则？为什么要进行内存对齐，有什么优点？
+
+内存对齐：编译器将程序中的每个“数据单元”安排在字的整数倍的地址指向的内存之中
+内存对齐的原则：
+
+* 结构体变量的首地址能够被其最宽基本类型成员大小与对齐基数中的较小者所整除；
+* 结构体每个成员相对于结构体首地址的偏移量 （offset） 都是该成员大小与对齐基数中的较小者的整数倍，如有需要编译器会在成员之间加上填充字节 （internal padding）；
+* 结构体的总大小为结构体最宽基本类型成员大小与对齐基数中的较小者的整数倍，如有需要编译器会在最末一个成员之后加上填充字节 （trailing padding）。
+
+```cpp
+/*
+说明：程序是在 64 位编译器下测试的
+*/
+#include <iostream>
+
+using namespace std;
+
+struct A
+{
+    short var; // 2 字节
+    int var1;  // 8 字节 （内存对齐原则：填充 2 个字节） 2 (short) + 2 (填充) + 4 (int)= 8
+    long var2; // 12 字节 8 + 4 (long) = 12
+    char var3; // 16 字节 （内存对齐原则：填充 3 个字节）12 + 1 (char) + 3 (填充) = 16
+    string s;  // 48 字节 16 + 32 (string) = 48
+};
+
+int main()
+{
+    short var;
+    int var1;
+    long var2;
+    char var3;
+    string s;
+    A ex1;
+    cout << sizeof(var) << endl;  // 2 short
+    cout << sizeof(var1) << endl; // 4 int
+    cout << sizeof(var2) << endl; // 4 long
+    cout << sizeof(var3) << endl; // 1 char
+    cout << sizeof(s) << endl;    // 32 string
+    cout << sizeof(ex1) << endl;  // 48 struct
+    return 0;
+}
+```
+
+进行内存对齐的原因：（主要是硬件设备方面的问题）
+
+* 某些硬件设备只能存取对齐数据，存取非对齐的数据可能会引发异常；
+* 某些硬件设备不能保证在存取非对齐数据的时候的操作是原子操作；
+* 相比于存取对齐的数据，存取非对齐的数据需要花费更多的时间；
+* 某些处理器虽然支持非对齐数据的访问，但会引发对齐陷阱（alignment trap）；
+* 某些硬件设备只支持简单数据指令非对齐存取，不支持复杂数据指令的非对齐存取。
+
+内存对齐的优点：
+
+* 便于在不同的平台之间进行移植，因为有些硬件平台不能够支持任意地址的数据访问，只能在某些地址处取某些特定的数据，否则会抛出异常；
+* 提高内存的访问效率，因为 CPU 在读取内存时，是一块一块的读取。
+
 ## **1.8 类的大小**
+> 面试高频指数：★★☆☆☆
+
+### 类大小的计算
+
+说明：类的大小是指类的实例化对象的大小，用 sizeof 对类型名操作时，结果是该类型的对象的大小。
+计算原则：
+
+* 遵循结构体的对齐原则。
+* 与普通成员变量有关，与成员函数和静态成员无关。即普通成员函数，静态成员函数，静态数据成员，静态常量数据成员均对类的大小无影响。因为静态数据成员被类的对象共享，并不属于哪个具体的对象。
+* 虚函数对类的大小有影响，是因为虚函数表指针的影响。
+* 虚继承对类的大小有影响，是因为虚基表指针带来的影响。
+* 空类的大小是一个特殊情况，空类的大小为 1，当用 new 来创建一个空类的对象时，为了保证不同对象的地址不同，空类也占用存储空间。
+
+### 实例：
+简单情况和空类情况
+
+```cpp
+/*
+说明：程序是在 64 位编译器下测试的
+*/
+#include <iostream>
+
+using namespace std;
+
+class A
+{
+private:
+    static int s_var; // 不影响类的大小
+    const int c_var;  // 4 字节
+    int var;          // 8 字节 4 + 4 (int) = 8
+    char var1;        // 12 字节 8 + 1 (char) + 3 (填充) = 12
+public:
+    A(int temp) : c_var(temp) {} // 不影响类的大小
+    ~A() {}                    // 不影响类的大小
+};
+
+class B
+{
+};
+int main()
+{
+    A ex1(4);
+    B ex2;
+    cout << sizeof(ex1) << endl; // 12 字节
+    cout << sizeof(ex2) << endl; // 1 字节
+    return 0;
+}
+```
+
+带有虚函数的情况：（注意：虚函数的个数并不影响所占内存的大小，因为类对象的内存中只保存了指向虚函数表的指针。）
+
+```cpp
+/*
+说明：程序是在 64 位编译器下测试的
+*/
+#include <iostream>
+
+using namespace std;
+
+class A
+{
+private:
+    static int s_var; // 不影响类的大小
+    const int c_var;  // 4 字节
+    int var;          // 8 字节 4 + 4 (int) = 8
+    char var1;        // 12 字节 8 + 1 (char) + 3 (填充) = 12
+public:
+    A(int temp) : c_var(temp) {} // 不影响类的大小
+    ~A() {}                      // 不影响类的大小
+    virtual void f() { cout << "A::f" << endl; }
+
+    virtual void g() { cout << "A::g" << endl; }
+
+    virtual void h() { cout << "A::h" << endl; } // 24 字节 12 + 4 (填充) + 8 (指向虚函数的指针) = 24
+};
+
+int main()
+{
+    A ex1(4);
+    A *p;
+    cout << sizeof(p) << endl;   // 8 字节 注意：指针所占的空间和指针指向的数据类型无关
+    cout << sizeof(ex1) << endl; // 24 字节
+    return 0;
+}
+
+```
+
 ## **1.9 什么是内存泄露**
+> 面试高频指数：★★★★☆
+
+内存泄漏：由于疏忽或错误导致的程序未能释放已经不再使用的内存。
+进一步解释：
+
+* 并非指内存从物理上消失，而是指程序在运行过程中，由于疏忽或错误而失去了对该内存的控制，从而造成了内存的浪费。
+* 常指堆内存泄漏，因为堆是动态分配的，而且是用户来控制的，如果使用不当，会产生内存泄漏。
+* 使用 malloc、calloc、realloc、new 等分配内存时，使用完后要调用相应的 free 或 delete 释放内存，否则这块内存就会造成内存泄漏。
+* 指针重新赋值
+
+```cpp
+char *p = (char *)malloc(10);
+char *p1 = (char *)malloc(10);
+p = np;
+```
+
+开始时，指针 p 和 p1 分别指向一块内存空间，但指针 p 被重新赋值，导致 p 初始时指向的那块内存空间无法找到，从而发生了内存泄漏。
+
 ## **1.10 怎么防止内存泄漏？内存泄漏检测工具的原理？**
+> 面试高频指数：★★★☆☆
+
+### 防止内存泄漏的方法：
+
+1. 内部封装：将内存的分配和释放封装到类中，在构造的时候申请内存，析构的时候释放内存。
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class A
+{
+private:
+    char *p;
+    unsigned int p_size;
+
+public:
+    A(unsigned int n = 1) // 构造函数中分配内存空间
+    {
+        p = new char[n];
+        p_size = n;
+    };
+    ~A() // 析构函数中释放内存空间
+    {
+        if (p != NULL)
+        {
+            delete[] p; // 删除字符数组
+            p = NULL;   // 防止出现野指针
+        }
+    };
+    char *GetPointer()
+    {
+        return p;
+    };
+};
+void fun()
+{
+    A ex(100);
+    char *p = ex.GetPointer();
+    strcpy(p, "Test");
+    cout << p << endl;
+}
+int main()
+{
+    fun();
+    return 0;
+}
+```
+
+说明：但这样做并不是最佳的做法，在类的对象复制时，程序会出现同一块内存空间释放两次的情况，请看如下程序：
+
+```cpp
+void fun1()
+{
+    A ex(100);
+    A ex1 = ex; 
+    char *p = ex.GetPointer();
+    strcpy(p, "Test");
+    cout << p << endl;
+}
+```
+
+简单解释：对于 fun1 这个函数中定义的两个类的对象而言，在离开该函数的作用域时，会两次调用析构函数来释放空间，但是这两个对象指向的是同一块内存空间，所以导致同一块内存空间被释放两次，可以通过增加计数机制来避免这种情况，看如下程序：
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+ using namespace std;
+ class A
+ {
+ private:
+     char *p;
+     unsigned int p_size;
+     int *p_count; // 计数变量
+ public:
+     A(unsigned int n = 1) // 在构造函数中申请内存
+     {
+         p = new char[n];
+         p_size = n;
+         p_count = new int;
+         *p_count = 1;
+         cout << "count is : " << *p_count << endl;
+     };
+     A(const A &temp)
+     {
+         p = temp.p;
+         p_size = temp.p_size;
+         p_count = temp.p_count;
+         (*p_count)++; // 复制时，计数变量 +1
+         cout << "count is : " << *p_count << endl;
+     }
+     ~A()
+     {
+         (*p_count)--; // 析构时，计数变量 -1
+         cout << "count is : " << *p_count << endl; 
+
+         if (*p_count == 0) // 只有当计数变量为 0 的时候才会释放该块内存空间
+         {
+             cout << "buf is deleted" << endl;
+             if (p != NULL) 
+             {
+                 delete[] p; // 删除字符数组
+                 p = NULL;   // 防止出现野指针
+                 if (p_count != NULL)
+                 {
+                     delete p_count;
+                     p_count = NULL;
+                 }
+             }
+         }
+     };
+     char *GetPointer()
+     {
+         return p;
+     };
+ };
+ void fun()
+ {
+     A ex(100);
+     char *p = ex.GetPointer();
+     strcpy(p, "Test");
+     cout << p << endl;
+
+     A ex1 = ex; // 此时计数变量会 +1
+     cout << "ex1.p = " << ex1.GetPointer() << endl;
+ }
+ int main()
+ {
+     fun();
+     return 0;
+ }
+```
+
+程序运行结果：
+
+```cpp
+count is : 1
+Test
+count is : 2
+ex1.p = Test
+count is : 1
+count is : 0
+buf is deleted
+```
+
+解释下：程序运行结果的倒数 2、3 行是调用两次析构函数时进行的操作，在第二次调用析构函数时，进行内存空间的释放，从而会有倒数第 1 行的输出结果。
+
+2. 智能指针
+智能指针是 C++ 中已经对内存泄漏封装好了一个工具，可以直接拿来使用，将在下一个问题中对智能指针进行详细的解释。
+
+### 内存泄漏检测工具的实现原理：
+
+内存检测工具有很多，这里重点介绍下 valgrind 。
+
+valgrind 是一套 Linux 下，开放源代码（GPL V2）的仿真调试工具的集合，包括以下工具：
+
+* Memcheck：内存检查器（valgrind 应用最广泛的工具），能够发现开发中绝大多数内存错误的使用情况，比如：使用未初始化的内存，使用已经释放了的内存，内存访问越界等。
+* Callgrind：检查程序中函数调用过程中出现的问题。
+* Cachegrind：检查程序中缓存使用出现的问题。
+* Helgrind：检查多线程程序中出现的竞争问题。
+* Massif：检查程序中堆栈使用中出现的问题。
+* Extension：可以利用 core 提供的功能，自己编写特定的内存调试工具。
+
+Memcheck 能够检测出内存问题，关键在于其建立了两个全局表：
+
+* Valid-Value 表：对于进程的整个地址空间中的每一个字节（byte），都有与之对应的 8 个 bits ；对于 CPU 的每个寄存器，也有一个与之对应的 bit 向量。这些 bits 负责记录该字节或者寄存器值是否具有有效的、已初始化的值。
+* Valid-Address 表：对于进程整个地址空间中的每一个字节（byte），还有与之对应的 1 个 bit，负责记录该地址是否能够被读写。
+
+检测原理：
+
+* 当要读写内存中某个字节时，首先检查这个字节对应的 Valid-Address 表中对应的 bit。如果该 bit 显示该位置是无效位置，Memcheck 则报告读写错误。
+* 内核（core）类似于一个虚拟的 CPU 环境，这样当内存中的某个字节被加载到真实的 CPU 中时，该字节在 Valid-Value 表对应的 bits 也被加载到虚拟的 CPU 环境中。一旦寄存器中的值，被用来产生内存地址，或者该值能够影响程序输出，则 Memcheck 会检查 Valid-Value 表对应的 bits，如果该值尚未初始化，则会报告使用未初始化内存错误。
+
 ## **1.11 智能指针有哪几种？智能指针的实现原理？**
 ## **1.12 一个 unique_ptr 怎么赋值给另一个 unique_ptr 对象？**
 ## **1.13 使用智能指针会出现什么问题？怎么解决？**
