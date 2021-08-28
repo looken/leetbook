@@ -502,6 +502,8 @@ buf is deleted
 
 内存检测工具有很多，这里重点介绍下 valgrind 。
 
+![valgrind](https://github.com/looken/leetbook/blob/main/1612687346-kyLXKn-image.png?raw=true)
+
 valgrind 是一套 Linux 下，开放源代码（GPL V2）的仿真调试工具的集合，包括以下工具：
 
 * Memcheck：内存检查器（valgrind 应用最广泛的工具），能够发现开发中绝大多数内存错误的使用情况，比如：使用未初始化的内存，使用已经释放了的内存，内存访问越界等。
@@ -522,9 +524,249 @@ Memcheck 能够检测出内存问题，关键在于其建立了两个全局表�
 * 内核（core）类似于一个虚拟的 CPU 环境，这样当内存中的某个字节被加载到真实的 CPU 中时，该字节在 Valid-Value 表对应的 bits 也被加载到虚拟的 CPU 环境中。一旦寄存器中的值，被用来产生内存地址，或者该值能够影响程序输出，则 Memcheck 会检查 Valid-Value 表对应的 bits，如果该值尚未初始化，则会报告使用未初始化内存错误。
 
 ## **1.11 智能指针有哪几种？智能指针的实现原理？**
+> 面试高频指数：★★★★★
+
+智能指针是为了解决动态内存分配时带来的内存泄漏以及多次释放同一块内存空间而提出的。C++11 中封装在了 <memory> 头文件中。
+    
+C++11 中智能指针包括以下三种：
+
+* 共享指针（shared_ptr）：资源可以被多个指针共享，使用计数机制表明资源被几个指针共享。通过 use_count() 查看资源的所有者的个数，可以通过 unique_ptr、weak_ptr 来构造，调用 release() 释放资源的所有权，计数减一，当计数减为 0 时，会自动释放内存空间，从而避免了内存泄漏。
+* 独占指针（unique_ptr）：独享所有权的智能指针，资源只能被一个指针占有，该指针不能拷贝构造和赋值。但可以进行移动构造和移动赋值构造（调用 move() 函数），即一个 unique_ptr 对象赋值给另一个 unique_ptr 对象，可以通过该方法进行赋值。
+* 弱指针（weak_ptr）：指向 share_ptr 指向的对象，能够解决由shared_ptr带来的循环引用问题。
+
+智能指针的实现原理： 计数原理。
+    
+```cpp
+#include <iostream>
+#include <memory>
+
+template <typename T>
+class SmartPtr
+{
+private : 
+	T *_ptr;
+	size_t *_count;
+
+public:
+	SmartPtr(T *ptr = nullptr) : _ptr(ptr)
+	{
+		if (_ptr)
+		{
+			_count = new size_t(1);
+		}
+		else
+		{
+			_count = new size_t(0);
+		}
+	}
+
+	~SmartPtr()
+	{
+		(*this->_count)--;
+		if (*this->_count == 0)
+		{
+			delete this->_ptr;
+			delete this->_count;
+		}
+	}
+
+	SmartPtr(const SmartPtr &ptr) // 拷贝构造：计数 +1
+	{
+		if (this != &ptr)
+		{
+			this->_ptr = ptr._ptr;
+			this->_count = ptr._count;
+			(*this->_count)++;
+		}
+	}
+
+	SmartPtr &operator=(const SmartPtr &ptr) // 赋值运算符重载 
+	{
+		if (this->_ptr == ptr._ptr)
+		{
+			return *this;
+		}
+		if (this->_ptr) // 将当前的 ptr 指向的原来的空间的计数 -1
+		{
+			(*this->_count)--;
+			if (this->_count == 0)
+			{
+				delete this->_ptr;
+				delete this->_count;
+			}
+		}
+		this->_ptr = ptr._ptr;
+		this->_count = ptr._count;
+		(*this->_count)++; // 此时 ptr 指向了新赋值的空间，该空间的计数 +1
+		return *this;
+	}
+
+	T &operator*()
+	{
+		assert(this->_ptr == nullptr);
+		return *(this->_ptr);
+	}
+
+	T *operator->()
+	{
+		assert(this->_ptr == nullptr);
+		return this->_ptr;
+	}
+
+	size_t use_count()
+	{
+		return *this->count;
+	}
+};
+```
+
 ## **1.12 一个 unique_ptr 怎么赋值给另一个 unique_ptr 对象？**
+> 面试高频指数：★★☆☆☆
+  
+借助 std::move() 可以实现将一个 unique_ptr 对象赋值给另一个 unique_ptr 对象，其目的是实现所有权的转移。
+    
+```cpp
+// A 作为一个类 
+std::unique_ptr<A> ptr1(new A());
+std::unique_ptr<A> ptr2 = std::move(ptr1);
+```
+    
 ## **1.13 使用智能指针会出现什么问题？怎么解决？**
+> 面试高频指数：★★★★★
+    
+### 智能指针可能出现的问题：循环引用
+在如下例子中定义了两个类 Parent、Child，在两个类中分别定义另一个类的对象的共享指针，由于在程序结束后，两个指针相互指向对方的内存空间，导致内存无法释放。
 
+```cpp
+#include <iostream>
+#include <memory>
 
+using namespace std;
 
+class Child;
+class Parent;
 
+class Parent {
+private:
+    shared_ptr<Child> ChildPtr;
+public:
+    void setChild(shared_ptr<Child> child) {
+        this->ChildPtr = child;
+    }
+
+    void doSomething() {
+        if (this->ChildPtr.use_count()) {
+
+        }
+    }
+
+    ~Parent() {
+    }
+};
+
+class Child {
+private:
+    shared_ptr<Parent> ParentPtr;
+public:
+    void setPartent(shared_ptr<Parent> parent) {
+        this->ParentPtr = parent;
+    }
+    void doSomething() {
+        if (this->ParentPtr.use_count()) {
+
+        }
+    }
+    ~Child() {
+    }
+};
+
+int main() {
+    weak_ptr<Parent> wpp;
+    weak_ptr<Child> wpc;
+    {
+        shared_ptr<Parent> p(new Parent);
+        shared_ptr<Child> c(new Child);
+        p->setChild(c);
+        c->setPartent(p);
+        wpp = p;
+        wpc = c;
+        cout << p.use_count() << endl; // 2
+        cout << c.use_count() << endl; // 2
+    }
+    cout << wpp.use_count() << endl;  // 1
+    cout << wpc.use_count() << endl;  // 1
+    return 0;
+}
+```
+
+循环引用的解决方法： weak_ptr
+
+循环引用：该被调用的析构函数没有被调用，从而出现了内存泄漏。
+
+* weak_ptr 对被 shared_ptr 管理的对象存在 非拥有性（弱）引用，在访问所引用的对象前必须先转化为 shared_ptr；
+* weak_ptr 用来打断 shared_ptr 所管理对象的循环引用问题，若这种环被孤立（没有指向环中的外部共享指针），shared_ptr 引用计数无法抵达 0，内存被泄露；令环中的指针之一为弱指针可以避免该情况；
+* weak_ptr 用来表达临时所有权的概念，当某个对象只有存在时才需要被访问，而且随时可能被他人删除，可以用 weak_ptr 跟踪该对象；需要获得所有权时将其转化为 shared_ptr，此时如果原来的 shared_ptr 被销毁，则该对象的生命期被延长至这个临时的 shared_ptr 同样被销毁。
+
+```cpp
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class Child;
+class Parent;
+
+class Parent {
+private:
+    //shared_ptr<Child> ChildPtr;
+    weak_ptr<Child> ChildPtr;
+public:
+    void setChild(shared_ptr<Child> child) {
+        this->ChildPtr = child;
+    }
+
+    void doSomething() {
+        //new shared_ptr
+        if (this->ChildPtr.lock()) {
+
+        }
+    }
+
+    ~Parent() {
+    }
+};
+
+class Child {
+private:
+    shared_ptr<Parent> ParentPtr;
+public:
+    void setPartent(shared_ptr<Parent> parent) {
+        this->ParentPtr = parent;
+    }
+    void doSomething() {
+        if (this->ParentPtr.use_count()) {
+
+        }
+    }
+    ~Child() {
+    }
+};
+
+int main() {
+    weak_ptr<Parent> wpp;
+    weak_ptr<Child> wpc;
+    {
+        shared_ptr<Parent> p(new Parent);
+        shared_ptr<Child> c(new Child);
+        p->setChild(c);
+        c->setPartent(p);
+        wpp = p;
+        wpc = c;
+        cout << p.use_count() << endl; // 2
+        cout << c.use_count() << endl; // 1
+    }
+    cout << wpp.use_count() << endl;  // 0
+    cout << wpc.use_count() << endl;  // 0
+    return 0;
+}
+```
