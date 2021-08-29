@@ -12,9 +12,13 @@ Linux ÖÐÒ²ÓÐ´ÅÅÌ¡¢´òÓ¡»ú¡¢ÍøÂçµÈ I/O Éè±¸£¬Linux °ÑÕâÐ©Éè±¸µ±×÷Ò»ÖÖ ÌØÊâÎÄ¼þ Õûº
 
 ¿éÌØÊâÎÄ¼þÊÇÒ»¸öÄÜ´æ´¢ ¹Ì¶¨´óÐ¡¿é ÐÅÏ¢µÄÉè±¸£¬ËüÖ§³Ö ÒÔ¹Ì¶¨´óÐ¡µÄ¿é£¬ÉÈÇø»òÈº¼¯¶ÁÈ¡ºÍ£¨¿ÉÑ¡£©Ð´ÈëÊý¾Ý¡£Ã¿¸ö¿é¶¼ÓÐ×Ô¼ºµÄ ÎïÀíµØÖ·¡£Í¨³£¿éµÄ´óÐ¡ÔÚ 512 - 65536 Ö®¼ä¡£ËùÓÐ´«ÊäµÄÐÅÏ¢¶¼»áÒÔ Á¬Ðø µÄ¿éÎªµ¥Î»¡£¿éÉè±¸µÄ»ù±¾ÌØÕ÷ÊÇÃ¿¸ö¿é¶¼½ÏÎª¶ÔÁ¢£¬ÄÜ¹»¶ÀÁ¢µÄ½øÐÐ¶ÁÐ´¡£³£¼ûµÄ¿éÉè±¸ÓÐ Ó²ÅÌ¡¢À¶¹â¹âÅÌ¡¢USB ÅÌÓë×Ö·ûÉè±¸Ïà±È£¬¿éÉè±¸Í¨³£ÐèÒª½ÏÉÙµÄÒý½Å¡£
 
+![¿éÉè±¸](https://github.com/looken/leetbook/blob/main/awesome-linux-handbook/images/io1.png?raw=true)
+
 ¿éÌØÊâÎÄ¼þµÄÈ±µã»ùÓÚ¸ø¶¨¹ÌÌ¬´æ´¢Æ÷µÄ¿éÉè±¸±È»ùÓÚÏàÍ¬ÀàÐÍµÄ´æ´¢Æ÷µÄ×Ö½ÚÑ°Ö·ÒªÂýÒ»Ð©£¬ÒòÎª±ØÐëÔÚ¿éµÄ¿ªÍ·¿ªÊ¼¶ÁÈ¡»òÐ´Èë¡£ËùÒÔ£¬Òª¶ÁÈ¡¸Ã¿éµÄÈÎºÎ²¿·Ö£¬±ØÐëÑ°ÕÒµ½¸Ã¿éµÄ¿ªÊ¼£¬¶ÁÈ¡Õû¸ö¿é£¬Èç¹û²»Ê¹ÓÃ¸Ã¿é£¬Ôò½«Æä¶ªÆú¡£ÒªÐ´Èë¿éµÄÒ»²¿·Ö£¬±ØÐëÑ°ÕÒµ½¿éµÄ¿ªÊ¼£¬½«Õû¸ö¿é¶ÁÈëÄÚ´æ£¬ÐÞ¸ÄÊý¾Ý£¬ÔÙ´ÎÑ°ÕÒµ½¿éµÄ¿ªÍ·´¦£¬È»ºó½«Õû¸ö¿éÐ´»ØÉè±¸¡£
 
 ÁíÒ»Àà I/O Éè±¸ÊÇ ×Ö·ûÌØÊâÎÄ¼þ¡£×Ö·ûÉè±¸ÒÔ ×Ö·û Îªµ¥Î»·¢ËÍ»ò½ÓÊÕÒ»¸ö×Ö·ûÁ÷£¬¶ø²»¿¼ÂÇÈÎºÎ¿é½á¹¹¡£×Ö·ûÉè±¸ÊÇ²»¿ÉÑ°Ö·µÄ£¬Ò²Ã»ÓÐÈÎºÎÑ°µÀ²Ù×÷¡£³£¼ûµÄ×Ö·ûÉè±¸ÓÐ ´òÓ¡»ú¡¢ÍøÂçÉè±¸¡¢Êó±ê¡¢ÒÔ¼°´ó¶àÊýÓë´ÅÅÌ²»Í¬µÄÉè±¸¡£
+
+![×Ö·ûÉè±¸](https://github.com/looken/leetbook/blob/main/awesome-linux-handbook/images/io2.png?raw=true)
 
 Ã¿¸öÉè±¸ÌØÊâÎÄ¼þ¶¼»áºÍ Éè±¸Çý¶¯ Ïà¹ØÁª¡£Ã¿¸öÇý¶¯³ÌÐò¶¼Í¨¹ýÒ»¸ö Ö÷Éè±¸ºÅ À´±êÊ¶¡£Èç¹ûÒ»¸öÇý¶¯Ö§³Ö¶à¸öÉè±¸µÄ»°£¬´ËÊ±»áÔÚÖ÷Éè±¸µÄºóÃæÐÂ¼ÓÒ»¸ö ´ÎÉè±¸ºÅ À´±êÊ¶¡£Ö÷Éè±¸ºÅºÍ´ÎÉè±¸ºÅ¹²Í¬È·¶¨ÁËÎ¨Ò»µÄÇý¶¯Éè±¸¡£
 
@@ -26,6 +30,8 @@ Linux ÖÐÒ²ÓÐ´ÅÅÌ¡¢´òÓ¡»ú¡¢ÍøÂçµÈ I/O Éè±¸£¬Linux °ÑÕâÐ©Éè±¸µ±×÷Ò»ÖÖ ÌØÊâÎÄ¼þ Õûº
 
 I/O µÄÁíÍâÒ»¸ö¸ÅÄîÊÇ ÍøÂç£¬ Ò²ÊÇÓÉ UNIX ÒýÈë£¬ÍøÂçÖÐÒ»¸öºÜ¹Ø¼üµÄ¸ÅÄî¾ÍÊÇ Ì×½Ó×Ö(socket)¡£Ì×½Ó×ÖÔÊÐíÓÃ»§Á¬½Óµ½ÍøÂç£¬ÕýÈçÓÊÍ²ÔÊÐíÓÃ»§Á¬½Óµ½ÓÊÕþÏµÍ³£¬Ì×½Ó×ÖµÄÊ¾ÒâÍ¼ÈçÏÂ
 
+![Ì×½Ó×Ö](https://github.com/looken/leetbook/blob/main/awesome-linux-handbook/images/io3.png?raw=true)
+
 Ì×½Ó×ÖµÄÎ»ÖÃÈçÉÏÍ¼ËùÊ¾£¬Ì×½Ó×Ö¿ÉÒÔ¶¯Ì¬´´½¨ºÍÏú»Ù¡£³É¹¦´´½¨Ò»¸öÌ×½Ó×Öºó£¬ÏµÍ³»á·µ»ØÒ»¸ö ÎÄ¼þÃèÊö·û(file descriptor)£¬ÔÚºóÃæµÄ´´½¨Á´½Ó¡¢¶ÁÊý¾Ý¡¢Ð´Êý¾Ý¡¢½â³ýÁ¬½ÓÊ±¶¼ÐèÒªÊ¹ÓÃµ½Õâ¸öÎÄ¼þÃèÊö·û¡£Ã¿¸öÌ×½Ó×Ö¶¼Ö§³ÖÒ»ÖÖÌØ¶¨ÀàÐÍµÄÍøÂçÀàÐÍ£¬ÔÚ´´½¨Ê±Ö¸¶¨¡£Ò»°ã×î³£ÓÃµÄ¼¸ÖÖ
 
 * ¿É¿¿µÄÃæÏòÁ¬½ÓµÄ×Ö½ÚÁ÷
@@ -34,6 +40,8 @@ I/O µÄÁíÍâÒ»¸ö¸ÅÄîÊÇ ÍøÂç£¬ Ò²ÊÇÓÉ UNIX ÒýÈë£¬ÍøÂçÖÐÒ»¸öºÜ¹Ø¼üµÄ¸ÅÄî¾ÍÊÇ Ì×½Ó×Ö(
 * ¿É¿¿µÄÃæÏòÁ¬½ÓµÄ×Ö½ÚÁ÷»áÊ¹ÓÃ ¹ÜµÀ ÔÚÁ½Ì¨»úÆ÷Ö®¼ä½¨Á¢Á¬½Ó¡£ÄÜ¹»±£Ö¤×Ö½Ú´ÓÒ»Ì¨»úÆ÷°´ÕÕË³Ðòµ½´ïÁíÒ»Ì¨»úÆ÷£¬ÏµÍ³ÄÜ¹»±£Ö¤ËùÓÐ×Ö½Ú¶¼ÄÜµ½´ï¡£
 
 ³ýÁËÊý¾Ý°üÖ®¼äµÄ·Ö½çÖ®Íâ£¬µÚ¶þÖÖÀàÐÍºÍµÚÒ»ÖÖÀàÐÍÊÇÀàËÆµÄ¡£Èç¹û·¢ËÍÁË 3 ´ÎÐ´²Ù×÷£¬ÄÇÃ´Ê¹ÓÃµÚÒ»ÖÖ·½Ê½µÄ½ÓÊÜÕß»áÖ±½Ó½ÓÊÕµ½ËùÓÐ×Ö½Ú£»µÚ¶þÖÖ·½Ê½µÄ½ÓÊÜÕß»á·Ö 3 ´Î½ÓÊÜËùÓÐ×Ö½Ú¡£³ý´ËÖ®Íâ£¬ÓÃ»§»¹¿ÉÒÔÊ¹ÓÃµÚÈýÖÖ¼´²»¿É¿¿µÄÊý¾Ý°üÀ´´«Êä£¬Ê¹ÓÃÕâÖÖ´«Êä·½Ê½µÄÓÅµãÔÚÓÚ¸ßÐÔÄÜ£¬ÓÐµÄÊ±ºòËü±È¿É¿¿ÐÔ¸ü¼ÓÖØÒª£¬±ÈÈçÔÚÁ÷Ã½ÌåÖÐ£¬ÐÔÄÜ¾ÍÓÈÆäÖØÒª¡£
+
+![ÍøÂçÐ­Òé·Ö²ã](https://github.com/looken/leetbook/blob/main/awesome-linux-handbook/images/io4.png?raw=true)
 
 ÒÔÉÏÉæ¼°Á½ÖÖÐÎÊ½µÄ´«ÊäÐ­Òé£¬¼´ TCP ºÍ UDP£¬TCP ÊÇ ´«Êä¿ØÖÆÐ­Òé£¬ËüÄÜ¹»´«Êä¿É¿¿µÄ×Ö½ÚÁ÷¡£UDP ÊÇ ÓÃ»§Êý¾Ý±¨Ð­Òé£¬ËüÖ»ÄÜ¹»´«Êä²»¿É¿¿µÄ×Ö½ÚÁ÷¡£ËüÃÇ¶¼ÊôÓÚ TCP/IP Ð­Òé´ØÖÐµÄÐ­Òé£¬ÏÂÃæÊÇÍøÂçÐ­Òé·Ö²ã
 
@@ -78,6 +86,8 @@ I/O ÊµÏÖÖ¸µÄ¾ÍÊÇ¶Ô×Ö·ûÉè±¸ºÍ¿éÉè±¸µÄÊµÏÖ
 
 ÏµÍ³ÖÐ´¦Àí¿éÌØÊâÎÄ¼þ I/O ²¿·ÖµÄÄ¿±êÊÇÎªÁËÊ¹´«Êä´ÎÊý¾¡¿ÉÄÜµÄÐ¡¡£ÎªÁËÊµÏÖÕâ¸öÄ¿±ê£¬Linux ÏµÍ³ÔÚ´ÅÅÌÇý¶¯³ÌÐòºÍÎÄ¼þÏµÍ³Ö®¼äÉèÖÃÁËÒ»¸ö ¸ßËÙ»º´æ(cache) £¬ÈçÏÂÍ¼ËùÊ¾
 
+![¸ßËÙ»º´æ](https://github.com/looken/leetbook/blob/main/awesome-linux-handbook/images/io5.png?raw=true)
+
 ÔÚ Linux ÄÚºË 2.2 Ö®Ç°£¬Linux ÏµÍ³Î¬»¤×ÅÁ½¸ö»º´æ£ºÒ³Ãæ»º´æ(page cache) ºÍ »º³åÇø»º´æ(buffer cache)£¬Òò´Ë£¬´æ´¢ÔÚÒ»¸ö´ÅÅÌ¿éÖÐµÄÎÄ¼þ¿ÉÄÜ»áÔÚÁ½¸ö»º´æÖÐ¡£2.2 °æ±¾ÒÔºó Linux ÄÚºËÖ»ÓÐÒ»¸öÍ³Ò»µÄ»º´æÒ»¸ö Í¨ÓÃÊý¾Ý¿é²ã(generic block layer) °ÑÕâÐ©ÈÚºÏÔÚÒ»Æð£¬ÊµÏÖÁË´ÅÅÌ¡¢Êý¾Ý¿é¡¢»º³åÇøºÍÊý¾ÝÒ³Ö®¼ä±ØÒªµÄ×ª»»¡£ÄÇÃ´Ê²Ã´ÊÇÍ¨ÓÃÊý¾Ý¿é²ã£¿
 
 > Í¨ÓÃÊý¾Ý¿é²ãÊÇÒ»¸öÄÚºËµÄ×é³É²¿·Ö£¬ÓÃÓÚ´¦Àí¶ÔÏµÍ³ÖÐËùÓÐ¿éÉè±¸µÄÇëÇó¡£Í¨ÓÃÊý¾Ý¿éÖ÷ÒªÓÐÒÔÏÂ¼¸¸ö¹¦ÄÜ
@@ -100,6 +110,8 @@ Linux ÏµÍ³ÖÐÊ¹ÓÃ IO µ÷¶ÈÆ÷ À´±£Ö¤¼õÉÙ´ÅÍ·µÄ·´¸´ÒÆ¶¯´Ó¶ø¼õÉÙËðÊ§¡£I/O µ÷¶ÈÆ÷µÄ×÷Ó
 
 > Ê²Ã´ÊÇÐÐ¹æÔò£¿
 > ÐÐ¹æÊÇÄ³Ð©Àà UNIX ÏµÍ³ÖÐµÄÒ»²ã£¬ÖÕ¶Ë×ÓÏµÍ³Í¨³£ÓÉÈý²ã×é³É£ºÉÏ²ãÌá¹©×Ö·ûÉè±¸½Ó¿Ú£¬ÏÂ²ãÓ²¼þÇý¶¯³ÌÐòÓëÓ²¼þ»òÎ±ÖÕ¶Ë½øÐÐ½»»¥£¬ÖÐ²ã¹æÔòÓÃÓÚÊµÏÖÖÕ¶ËÉè±¸¹²ÓÐµÄÐÐÎª¡£
+
+![ÐÐ¹æÔò](https://github.com/looken/leetbook/blob/main/awesome-linux-handbook/images/io6.png?raw=true)
 
 ### **4.4.3 ÍøÂçÉè±¸ÊµÏÖ**
 
