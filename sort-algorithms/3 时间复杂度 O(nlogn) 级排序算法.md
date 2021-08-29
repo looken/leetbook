@@ -20,6 +20,8 @@
 
 **动图演示**
 
+![希尔排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/xier1.gif?raw=true)
+
 其中，每一遍排序的间隔在希尔排序中被称之为增量，所有的增量组成的序列称之为增量序列，也就是本例中的 [5, 2, 1][5,2,1]。增量依次递减，最后一个增量必须为 11，所以希尔排序又被称之为「缩小增量排序」。要是以专业术语来描述希尔排序，可以分为以下两个步骤：
 
 * 定义增量序列 D_m > D_{m-1} > D_{m-2} > ... > D_1 = 1
@@ -86,6 +88,8 @@ public static void shellSort(int[] arr) {
 
 **增量序列**
 上文说到，增量序列的选择会极大地影响希尔排序的效率。增量序列如果选得不好，希尔排序的效率可能比插入排序效率还要低，举个例子：
+
+![希尔排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/xier2.png?raw=true)
 
 在这个例子中，我们发现，原数组 8 间隔、4 间隔、2 间隔都已经有序了，使用希尔排序时，真正起作用的只有最后一轮 1 间隔排序，也就是直接插入排序。希尔排序反而比直接使用插入排序多执行了许多无用的逻辑。
 
@@ -205,6 +209,10 @@ public void test() {
 
 方案二更为常用，动图演示如下：
 
+![堆排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/dui1.gif?raw=true)
+
+![堆排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/dui2.gif?raw=true)
+
 在介绍堆排序具体实现之前，我们先要了解完全二叉树的几个性质。将根节点的下标视为 0，则完全二叉树有如下性质：
 
 * 对于完全二叉树中的第 i 个数，它的左子节点下标：left = 2i + 1
@@ -309,6 +317,8 @@ private static void swap(int[] arr, int i, int j) {
 事实上，快速排序的每一次遍历，都将基数摆到了最终位置上。第一轮遍历排好 1 个基数，第二轮遍历排好 2 个基数（每个区域一个基数，但如果某个区域为空，则此轮只能排好一个基数），第三轮遍历排好 4 个基数（同理，最差的情况下，只能排好一个基数），以此类推。总遍历次数为 logn～n 次，每轮遍历的时间复杂度为O(n)，所以很容易分析出快速排序的时间复杂度为O(nlogn) ～ O(n^2)，平均时间复杂度为O(nlogn)。
 
 **动图演示**
+
+![快速排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/quick1.gif?raw=true)
 
 **快速排序递归框架**
 
@@ -562,7 +572,11 @@ private static void exchange(int[] arr, int i, int j) {
 
 数组为正序：
 
+![快速排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/quick2.gif?raw=true)
+
 数组为逆序：
+
+![快速排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/quick3.gif?raw=true)
 
 理想中的快速排序在第 k 轮遍历中，可以排好2^{k-1}个基数。但从图中我们发现，当数组原本为正序或逆序时，我们将第一个数作为基数的话，每轮分区后，都有一个区域是空的，也就是说数组中剩下的数字都被分到了同一个区域！这就导致了每一轮遍历只能排好一个基数。所以总的比较次数为 (n - 1) + (n - 2) + (n - 3) + ... + 1 次，由等差数列求和公式可以计算出总的比较次数为 n(n - 1)/2 次，此时快速排序的时间复杂度达到了O(n^2)级。
 
@@ -860,6 +874,8 @@ private static void merge(int[] arr, int start, int end, int[] result) {
 ```
 
 牺牲了一些可读性，代码变得精简了不少。动图演示如下：
+
+![归并排序](https://github.com/looken/leetbook/blob/main/sort-algorithms/images/guibing1.gif?raw=true)
 
 **原地归并排序？**
 
