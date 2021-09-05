@@ -1,0 +1,266 @@
+# **例题：删除链表的倒数第 N 个结点**
+
+给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+
+进阶： 你能尝试使用一趟扫描实现吗？
+
+示例 1：
+
+![]()
+```java
+输入：head = [1,2,3,4,5], n = 2
+输出：[1,2,3,5]
+```
+
+示例 2：
+```java
+输入：head = [1], n = 1
+输出：[]
+```
+
+示例 3：
+```java
+输入：head = [1,2], n = 1
+输出：[1]
+```
+
+
+提示：
+
+链表中结点的数目为 sz
+* 1 <= sz <= 30
+* 0 <= Node.val <= 100
+* 1 <= n <= sz
+
+文字题解
+前言
+在对链表进行操作时，一种常用的技巧是添加一个哑节点（dummy node），它的 next 指针指向链表的头节点。这样一来，我们就不需要对头节点进行特殊的判断了。
+
+例如，在本题中，如果我们要删除节点 yy，我们需要知道节点 y 的前驱节点 x，并将 x 的指针指向 yy 的后继节点。但由于头节点不存在前驱节点，因此我们需要在删除头节点时进行特殊判断。但如果我们添加了哑节点，那么头节点的前驱节点就是哑节点本身，此时我们就只需要考虑通用的情况即可。
+
+特别地，在某些语言中，由于需要自行对内存进行管理。因此在实际的面试中，对于「是否需要释放被删除节点对应的空间」这一问题，我们需要和面试官进行积极的沟通以达成一致。下面的代码中默认不释放空间。
+
+方法一：计算链表长度
+思路与算法
+
+一种容易想到的方法是，我们首先从头节点开始对链表进行一次遍历，得到链表的长度 L。随后我们再从头节点开始对链表进行一次遍历，当遍历到第 L − n + 1 个节点时，它就是我们需要删除的节点。
+
+为了与题目中的 n 保持一致，节点的编号从 1 开始，头节点为编号 1 的节点。
+
+为了方便删除操作，我们可以从哑节点开始遍历 L − n + 1 个节点。当遍历到第 L − n + 1 个节点时，它的下一个节点就是我们需要删除的节点，这样我们只需要修改一次指针，就能完成删除操作。
+
+![]()
+
+代码
+```java
+class Solution {
+public:
+    int getLength(ListNode* head) {
+        int length = 0;
+        while (head) {
+            ++length;
+            head = head->next;
+        }
+        return length;
+    }
+
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummy = new ListNode(0, head);
+        int length = getLength(head);
+        ListNode* cur = dummy;
+        for (int i = 1; i < length - n + 1; ++i) {
+            cur = cur->next;
+        }
+        cur->next = cur->next->next;
+        ListNode* ans = dummy->next;
+        delete dummy;
+        return ans;
+    }
+};
+```
+
+复杂度分析
+
+* 时间复杂度：O(L)，其中 L 是链表的长度。
+* 空间复杂度：O(1)。
+
+方法二：栈
+思路与算法
+
+我们也可以在遍历链表的同时将所有节点依次入栈。根据栈「先进后出」的原则，我们弹出栈的第 nn 个节点就是需要删除的节点，并且目前栈顶的节点就是待删除节点的前驱节点。这样一来，删除操作就变得十分方便了。
+
+代码
+
+```java
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummy = new ListNode(0, head);
+        stack<ListNode*> stk;
+        ListNode* cur = dummy;
+        while (cur) {
+            stk.push(cur);
+            cur = cur->next;
+        }
+        for (int i = 0; i < n; ++i) {
+            stk.pop();
+        }
+        ListNode* prev = stk.top();
+        prev->next = prev->next->next;
+        ListNode* ans = dummy->next;
+        delete dummy;
+        return ans;
+    }
+};
+```
+
+复杂度分析
+* 时间复杂度：O(L)，其中 L 是链表的长度。
+* 空间复杂度：O(L)，其中 L 是链表的长度。主要为栈的开销。
+
+方法三：双指针
+思路与算法
+
+我们也可以在不预处理出链表的长度，以及使用常数空间的前提下解决本题。
+
+由于我们需要找到倒数第 n 个节点，因此我们可以使用两个指针 first 和 second 同时对链表进行遍历，并且 first 比 second 超前 nn 个节点。当 first 遍历到链表的末尾时，second 就恰好处于倒数第 n 个节点。
+
+具体地，初始时 first 和 second 均指向头节点。我们首先使用 first 对链表进行遍历，遍历的次数为 n。此时，first 和 second 之间间隔了 n-1n−1 个节点，即 first 比 second 超前了 n 个节点。
+
+在这之后，我们同时使用 first 和 second 对链表进行遍历。当 first 遍历到链表的末尾（即 first 为空指针）时，second 恰好指向倒数第 nn 个节点。
+
+根据方法一和方法二，如果我们能够得到的是倒数第 nn 个节点的前驱节点而不是倒数第 nn 个节点的话，删除操作会更加方便。因此我们可以考虑在初始时将 second 指向哑节点，其余的操作步骤不变。这样一来，当 first 遍历到链表的末尾时，second 的下一个节点就是我们需要删除的节点。
+
+![]()
+
+代码
+```java
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummy = new ListNode(0, head);
+        ListNode* first = head;
+        ListNode* second = dummy;
+        for (int i = 0; i < n; ++i) {
+            first = first->next;
+        }
+        while (first) {
+            first = first->next;
+            second = second->next;
+        }
+        second->next = second->next->next;
+        ListNode* ans = dummy->next;
+        delete dummy;
+        return ans;
+    }
+};
+```
+
+复杂度分析
+
+* 时间复杂度：O(L)，其中 L 是链表的长度。
+* 空间复杂度：O(1)。
+
+## 例题：链表的中间结点
+
+给定一个头结点为 head 的非空单链表，返回链表的中间结点。
+
+如果有两个中间结点，则返回第二个中间结点。
+
+示例 1：
+```java
+输入：[1,2,3,4,5]
+输出：此列表中的结点 3 (序列化形式：[3,4,5])
+返回的结点值为 3 。 (测评系统对该结点序列化表述是 [3,4,5])。
+注意，我们返回了一个 ListNode 类型的对象 ans，这样：
+ans.val = 3, ans.next.val = 4, ans.next.next.val = 5, 以及 ans.next.next.next = NULL.
+```
+
+示例 2：
+```java
+输入：[1,2,3,4,5,6]
+输出：此列表中的结点 4 (序列化形式：[4,5,6])
+由于该列表有两个中间结点，值分别为 3 和 4，我们返回第二个结点。
+```
+
+提示：
+
+* 给定链表的结点数介于 1 和 100 之间。
+
+文字题解
+方法一：数组
+思路和算法
+
+链表的缺点在于不能通过下标访问对应的元素。因此我们可以考虑对链表进行遍历，同时将遍历到的元素依次放入数组 A 中。如果我们遍历到了 N 个元素，那么链表以及数组的长度也为 N，对应的中间节点即为 A[N/2]。
+
+```java
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        vector<ListNode*> A = {head};
+        while (A.back()->next != NULL)
+            A.push_back(A.back()->next);
+        return A[A.size() / 2];
+    }
+};
+```
+
+复杂度分析
+
+* 时间复杂度：O(N)，其中 N 是给定链表中的结点数目。
+* 空间复杂度：O(N)，即数组 A 用去的空间。
+
+方法二：单指针法
+我们可以对方法一进行空间优化，省去数组 A。
+
+我们可以对链表进行两次遍历。第一次遍历时，我们统计链表中的元素个数 N；第二次遍历时，我们遍历到第 N/2 个元素（链表的首节点为第 0 个元素）时，将该元素返回即可。
+```java
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        int n = 0;
+        ListNode* cur = head;
+        while (cur != nullptr) {
+            ++n;
+            cur = cur->next;
+        }
+        int k = 0;
+        cur = head;
+        while (k < n / 2) {
+            ++k;
+            cur = cur->next;
+        }
+        return cur;
+    }
+};
+```
+
+复杂度分析
+
+* 时间复杂度：O(N)，其中 N 是给定链表的结点数目。
+* 空间复杂度：O(1)，只需要常数空间存放变量和指针。
+
+方法三：快慢指针法
+思路和算法
+
+我们可以继续优化方法二，用两个指针 slow 与 fast 一起遍历链表。slow 一次走一步，fast 一次走两步。那么当 fast 到达链表的末尾时，slow 必然位于中间。
+```java
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return slow;
+    }
+};
+
+```
+
+复杂度分析
+
+* 时间复杂度：O(N)，其中 N 是给定链表的结点数目。
+* 空间复杂度：O(1)，只需要常数空间存放 slow 和 fast 两个指针。
